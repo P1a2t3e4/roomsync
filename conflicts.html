@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflict Reports Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #f1f3f4;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --hover-color: #f8f9fa;
+        }
+        
+        /* Animated Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://i0.wp.com/sutherlandandsutherland.com/wp-content/uploads/2017/03/Ashesi_hostel0004.jpg?fit=1024%2C683&ssl=1');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+            z-index: -1;
+        }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: rgba(248, 249, 250, 0.85);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .search-box {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: 300px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .status {
+            padding: 10px;
+            background-color: #e8f0fe;
+            color: var(--primary-color);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-violation {
+            background-color: #fce8e6;
+            color: #d93025;
+        }
+        
+        /* Status badges */
+        .badge-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .badge-pending {
+            background-color: #fce8e6;
+            color: #d93025;
+            border: 1px solid #d93025;
+        }
+        
+        .badge-viewed {
+            background-color: #fef7e0;
+            color: #f29900;
+            border: 1px solid #f29900;
+        }
+        
+        .badge-resolved {
+            background-color: #e6f4ea;
+            color: #34a853;
+            border: 1px solid #34a853;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #5f6368;
+        }
+        
+        .error {
+            background-color: #fce8e6;
+            color: #d93025;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .timestamp {
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <a href="dashboard.html" class="dashboard-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1>Conflict Reports</h1>
+        
+        <div class="controls">
+            <input type="text" class="search-box" placeholder="Search reports..." id="searchInput">
+            <div class="status">Showing all reports</div>
+        </div>
+        
+        <div id="loading" class="loading">Loading reports...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <table id="reportsTable">
+            <thead>
+                <tr>
+                    <th>Conflict Type</th>
+                    <th>Description</th>
+                    <th>RA Name</th>
+                    <th>Room</th>
+                    <th>Status</th>
+                    <th>Reported</th>
+                </tr>
+            </thead>
+            <tbody id="reportsBody">
+                <!-- Reports will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCv3oSTt3cChY2l2ZKeKzratpq4J9Lspco",
+            authDomain: "smartroom-31b43.firebaseapp.com",
+            projectId: "smartroom-31b43",
+            storageBucket: "smartroom-31b43.firebasestorage.app",
+            messagingSenderId: "321362246067",
+            appId: "1:321362246067:web:740f994f8909b0e308b3c6",
+            measurementId: "G-HP6NP92D44"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // DOM elements
+        const reportsBody = document.getElementById('reportsBody');
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '-';
+            try {
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            } catch (e) {
+                return '-';
+            }
+        }
+        
+        // Format conflict type with badge
+        function formatConflictType(type) {
+            if (!type) return '-';
+            return `<span class="badge badge-violation">${type}</span>`;
+        }
+        
+        // Format status with appropriate badge
+        function formatStatus(status) {
+            if (!status) return `<span class="badge-status badge-pending">Pending</span>`;
+            
+            switch(status.toLowerCase()) {
+                case 'resolved':
+                    return `<span class="badge-status badge-resolved">Resolved</span>`;
+                case 'viewed':
+                    return `<span class="badge-status badge-viewed">Viewed</span>`;
+                case 'pending':
+                default:
+                    return `<span class="badge-status badge-pending">Pending</span>`;
+            }
+        }
+        
+        // Load and display reports
+        function loadReports() {
+            loadingElement.style.display = 'block';
+            errorElement.style.display = 'none';
+            reportsBody.innerHTML = '';
+            
+            db.collection("conflict_reports").get()
+                .then((querySnapshot) => {
+                    loadingElement.style.display = 'none';
+                    
+                    if (querySnapshot.empty) {
+                        reportsBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px;">
+                                    No conflict reports found
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    querySnapshot.forEach((doc) => {
+                        const report = doc.data();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${formatConflictType(report.conflictType)}</td>
+                            <td>${report.description || '-'}</td>
+                            <td>${report.raName || '-'}</td>
+                            <td>${report.roomNumber || '-'}</td>
+                            <td>${formatStatus(report.status)}</td>
+                            <td class="timestamp">${formatTimestamp(report.timestamp)}</td>
+                        `;
+                        
+                        reportsBody.appendChild(row);
+                    });
+                })
+                .catch((error) => {
+                    loadingElement.style.display = 'none';
+                    errorElement.style.display = 'block';
+                    errorElement.textContent = `Error loading reports: ${error.message}`;
+                    console.error("Error loading reports: ", error);
+                });
+        }
+        
+        // Simple search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = reportsBody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        });
+        
+        // Load reports when page loads
+        document.addEventListener('DOMContentLoaded', loadReports);
+    </script>
+</body>
+</html>

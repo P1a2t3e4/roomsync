@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA Ratings </title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #f1f3f4;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --hover-color: #f8f9fa;
+            --rating-good: #34a853;
+            --rating-average: #fbbc05;
+            --rating-poor: #ea4335;
+        }
+        
+        /* Background with hostel image */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://i0.wp.com/sutherlandandsutherland.com/wp-content/uploads/2017/03/Ashesi_hostel0004.jpg?fit=1024%2C683&ssl=1');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.9;
+            z-index: -1;
+        }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: rgba(248, 249, 250, 0.85);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(2px);
+        }
+        
+        .dashboard-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .dashboard-link:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: 300px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .status {
+            padding: 10px;
+            background-color: #e8f0fe;
+            color: var(--primary-color);
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .auth-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .auth-section button {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .auth-section button:hover {
+            background-color: #3367d6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .rating {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .rating-good {
+            background-color: var(--rating-good);
+        }
+        
+        .rating-average {
+            background-color: var(--rating-average);
+        }
+        
+        .rating-poor {
+            background-color: var(--rating-poor);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #5f6368;
+        }
+        
+        .error {
+            background-color: #fce8e6;
+            color: #d93025;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .timestamp {
+            white-space: nowrap;
+        }
+        
+        .hall-badge {
+            display: inline-block;
+            background-color: #e0e0ff;
+            color: #3030a0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .student-name {
+            font-style: italic;
+            color: #666;
+        }
+        
+        .category-ratings {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .category-item {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .category-name {
+            font-weight: 500;
+        }
+        
+        .comment-text {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .comment-text.expanded {
+            white-space: normal;
+            overflow: visible;
+        }
+        
+        .expand-btn {
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .auth-alert {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #ffeeba;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <a href="dashboard.html" class="dashboard-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        
+        <h1>RA Ratings </h1>
+        
+        <!-- Authentication Section -->
+        <div class="auth-section" id="authSection">
+            <p id="authStatus">Loading authentication status...</p>
+            <button id="signInBtn">Sign In as Web Admin</button>
+            <button id="signOutBtn" style="display: none;"></button>
+        </div>
+        
+        <div id="authAlert" class="auth-alert" style="display: none;">
+            You need to sign in as a Web Admin to view complete student information.
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="search-box" placeholder="Search by RA name, hall, or comment..." id="searchInput">
+            <div class="status" id="statusDisplay">Loading ratings...</div>
+        </div>
+        
+        <div id="loading" class="loading">Loading ratings...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <table id="ratingsTable">
+            <thead>
+                <tr>
+                    <th>RA Name</th>
+                    <th>Hall</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Student</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="ratingsBody">
+                <!-- Ratings will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCv3oSTt3cChY2l2ZKeKzratpq4J9Lspco",
+            authDomain: "smartroom-31b43.firebaseapp.com",
+            projectId: "smartroom-31b43",
+            storageBucket: "smartroom-31b43.appspot.com",
+            messagingSenderId: "321362246067",
+            appId: "1:321362246067:web:740f994f8909b0e308b3c6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        // Authentication state
+        let isWebAdmin = false;
+        
+        // DOM elements
+        const ratingsBody = document.getElementById('ratingsBody');
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const searchInput = document.getElementById('searchInput');
+        const authStatus = document.getElementById('authStatus');
+        const signInBtn = document.getElementById('signInBtn');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const authAlert = document.getElementById('authAlert');
+        
+        // Cache for student information to avoid repeated lookups
+        const userCache = {};
+        
+        // Authentication listener
+        auth.onAuthStateChanged(async function(user) {
+            if (user) {
+                // User is signed in
+                authStatus.textContent = `Signed in as ${user.email}`;
+                signInBtn.style.display = 'none';
+                signOutBtn.style.display = 'inline-block';
+                
+                // Check if user is webAdmin
+                isWebAdmin = await checkWebAdminRole(user.uid);
+                
+                if (isWebAdmin) {
+                    statusDisplay.textContent = 'Showing all ratings (Web Admin view)';
+                    authAlert.style.display = 'none';
+                } else {
+                    statusDisplay.textContent = 'Showing all ratings (limited details)';
+                    authAlert.style.display = 'block';
+                }
+                
+                // Reload ratings with authenticated user
+                loadRatings();
+            } else {
+                // User is signed out
+                authStatus.textContent = 'Not signed in. Please sign in as Web Admin to view complete student information.';
+                signInBtn.style.display = 'inline-block';
+                signOutBtn.style.display = 'none';
+                statusDisplay.textContent = 'Showing all ratings (limited details)';
+                authAlert.style.display = 'block';
+                isWebAdmin = false;
+                
+                // Load ratings with limited data
+                loadRatings();
+            }
+        });
+        
+        // Check if user is a web admin
+        async function checkWebAdminRole(uid) {
+            try {
+                const webAdminDoc = await db.collection("webAdmins").doc(uid).get();
+                return webAdminDoc.exists;
+            } catch (error) {
+                console.error("Error checking web admin role:", error);
+                return false;
+            }
+        }
+        
+        // Sign in handler
+        signInBtn.addEventListener('click', function() {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+                .catch(error => {
+                    console.error("Error signing in:", error);
+                    errorElement.style.display = 'block';
+                    errorElement.textContent = `Error signing in: ${error.message}`;
+                });
+        });
+        
+        // Sign out handler
+        signOutBtn.addEventListener('click', function() {
+            auth.signOut().catch(error => {
+                console.error("Error signing out:", error);
+            });
+        });
+        
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '-';
+            try {
+                const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            } catch (e) {
+                return '-';
+            }
+        }
+        
+        // Format rating with color coding
+        function formatRating(rating) {
+            if (!rating) return '-';
+            
+            let ratingClass = 'rating-average';
+            if (rating >= 4) ratingClass = 'rating-good';
+            else if (rating <= 2) ratingClass = 'rating-poor';
+            
+            return `<span class="rating ${ratingClass}">${rating}/5</span>`;
+        }
+        
+        // Format category ratings
+        function formatCategoryRatings(categoryRatings) {
+            if (!categoryRatings) return '';
+            
+            // Define categories with nice display names
+            const categories = {
+                'approachability': 'Approachability',
+                'communityBuilding': 'Community Building',
+                'support': 'Support',
+                'conflictResolution': 'Conflict Resolution',
+                'policyEnforcement': 'Policy Enforcement'
+            };
+            
+            // Skip 'overall' since it's shown separately
+            let html = '<div class="category-ratings">';
+            
+            for (const [key, value] of Object.entries(categoryRatings)) {
+                if (key !== 'overall' && categories[key]) {
+                    html += `<div class="category-item"><span class="category-name">${categories[key]}:</span> ${value}/5</div>`;
+                }
+            }
+            
+            html += '</div>';
+            return html;
+        }
+        
+        // Format comment with expand/collapse functionality
+        function formatComment(comment) {
+            if (!comment) return '-';
+            
+            if (comment.length <= 50) return comment;
+            
+            const id = 'comment-' + Math.random().toString(36).substr(2, 9);
+            return `
+                <div class="comment-container">
+                    <div id="${id}" class="comment-text">${comment}</div>
+                    <span class="expand-btn" onclick="toggleComment('${id}')">Show more</span>
+                </div>
+            `;
+        }
+        
+        // Toggle comment expand/collapse
+        window.toggleComment = function(id) {
+            const element = document.getElementById(id);
+            const expandBtn = element.nextElementSibling;
+            
+            if (element.classList.contains('expanded')) {
+                element.classList.remove('expanded');
+                expandBtn.textContent = 'Show more';
+            } else {
+                element.classList.add('expanded');
+                expandBtn.textContent = 'Show less';
+            }
+        }
+        
+        // Get user display name from Firestore - WEBADMIN VERSION
+        async function getUserDisplayName(userId) {
+            if (!userId) return 'Anonymous Student';
+            
+            // First check the cache
+            if (userCache[userId]) return userCache[userId];
+            
+            // Only web admins can fetch user details based on security rules
+            if (!isWebAdmin) {
+                console.log("Not a web admin, returning masked name for user:", userId);
+                return 'Anonymous Student (Login as Web Admin to view)';
+            }
+            
+            try {
+                console.log(`Looking up user document for ID: ${userId}`);
+                const userDoc = await db.collection("users").doc(userId).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    // Look for fullName first, then displayName, then email, then default
+                    const displayName = userData.fullName || 
+                                      userData.displayName ||
+                                      userData.email || 
+                                      'Anonymous Student';
+                    console.log(`Found user ${userId}: ${displayName}`);
+                    
+                    // Cache the result
+                    userCache[userId] = displayName;
+                    return displayName;
+                } else {
+                    console.warn(`User document not found for ID: ${userId}`);
+                    return 'User Not Found';
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
+                if (error.code === 'permission-denied') {
+                    return 'Access Denied (Needs Web Admin privileges)';
+                }
+                return 'Error Loading User';
+            }
+        }
+        
+        // Load and display ratings - WEBADMIN VERSION
+        async function loadRatings() {
+            loadingElement.style.display = 'block';
+            errorElement.style.display = 'none';
+            ratingsBody.innerHTML = '';
+            
+            try {
+                // Always attempt to get ratings, but user info will be limited without web admin rights
+                console.log(`Loading ratings - Web Admin: ${isWebAdmin}`);
+                
+                const querySnapshot = await db.collection("ratings").orderBy("timestamp", "desc").get();
+                
+                loadingElement.style.display = 'none';
+                
+                if (querySnapshot.empty) {
+                    ratingsBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">
+                                No ratings found
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                console.log(`Found ${querySnapshot.size} ratings`);
+                
+                // Process all ratings
+                const promises = querySnapshot.docs.map(async (doc) => {
+                    const rating = doc.data();
+                    
+                    // Get student name with more robust handling
+                    let studentName = 'Anonymous Student';
+                    if (rating.userId) {
+                        studentName = await getUserDisplayName(rating.userId);
+                    }
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <strong>${rating.raName || '-'}</strong>
+                        </td>
+                        <td>
+                            <span class="hall-badge">${rating.hallName || '-'}</span>
+                        </td>
+                        <td>
+                            ${formatRating(rating.rating)}
+                            ${formatCategoryRatings(rating.categoryRatings)}
+                        </td>
+                        <td>${formatComment(rating.comment)}</td>
+                        <td class="student-name">${studentName}</td>
+                        <td class="timestamp">${formatTimestamp(rating.timestamp)}</td>
+                    `;
+                    
+                    ratingsBody.appendChild(row);
+                });
+                
+                // Wait for all async operations to complete
+                await Promise.all(promises);
+                
+            } catch (error) {
+                loadingElement.style.display = 'none';
+                errorElement.style.display = 'block';
+                errorElement.textContent = `Error loading ratings: ${error.message}`;
+                console.error("Error loading ratings: ", error);
+            }
+        }
+        
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = ratingsBody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        });
+    </script>
+</body>
+</html>

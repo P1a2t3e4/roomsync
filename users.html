@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | SmartRoom</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body, html {
+            font-family: 'Inter', sans-serif;
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        /* Background with animation */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://i0.wp.com/sutherlandandsutherland.com/wp-content/uploads/2017/03/Ashesi_hostel0004.jpg?fit=1024%2C683&ssl=1');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+            animation: zoomPan 30s infinite alternate;
+        }
+        
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes zoomPan {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+            100% {
+                transform: scale(1.1) translate(-5%, -5%);
+            }
+        }
+        
+        /* Content styling */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255,0.01);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Rest of your existing styles... */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.15);
+        }
+        
+        .header h1 {
+            color: #1e3a8a;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+   
+   
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #1e3a8a;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #1e3a8a;
+            color: #1e3a8a;
+        }
+        
+        .btn-outline:hover {
+            background-color: #1e3a8a;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #ea4335;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d73125;
+            transform: translateY(-2px);
+        }
+        
+        .user-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-header h2 {
+            font-size: 20px;
+            color: #212529;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .badge-primary {
+            background-color: #1e3a8a;
+            color: white;
+        }
+        
+        .badge-secondary {
+            background-color: #34a853;
+            color: white;
+        }
+        
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .users-table th {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #212529;
+            position: sticky;
+            top: 0;
+        }
+        
+        .users-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+        
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .users-table tr:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .user-email {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: #34a853;
+        }
+        
+        .status-inactive {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: #ea4335;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            border: none;
+            color: #6c757d;
+        }
+        
+        .action-btn:hover {
+            background-color: #f8f9fa;
+            color: #1e3a8a;
+        }
+        
+        .loading {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #1e3a8a;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+            background-color: white;
+            border-radius: 8px;
+        }
+        
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #e9ecef;
+        }
+        
+        .error-state {
+            padding: 40px;
+            text-align: center;
+            color: #ea4335;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #6c757d;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .user-detail {
+            margin-bottom: 15px;
+        }
+
+        .user-detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #6c757d;
+        }
+
+        .user-detail-value {
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .users-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Add the background container here -->
+    <div class="background-container">
+        <div class="background-image"></div>
+        <div class="background-overlay"></div>
+    </div>
+
+    <!-- Wrap all content in the content-wrapper -->
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="header">
+                <div class="mb-4">
+                    <a href="dashboard.html" class="flex items-center text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+                
+                <h1>
+                    <i class="fas fa-users"></i>
+                    User Management
+                </h1>
+                <div class="header-actions">
+                   
+                    <button class="btn btn-primary" id="addUserBtn">
+                        <i class="fas fa-plus"></i>
+                        Add New User
+                    </button>
+                </div>
+            </div>
+            
+            <div id="users-container">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading users...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View User Modal -->
+    <div id="viewUserModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user"></i>
+                    User Details
+                </h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="viewUserContent">
+                <!-- User details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Edit User
+                </h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label for="editFullName" class="form-label">Full Name</label>
+                        <input type="text" id="editFullName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail" class="form-label">Email</label>
+                        <input type="email" id="editEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhone" class="form-label">Phone</label>
+                        <input type="tel" id="editPhone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserType" class="form-label">User Type</label>
+                        <select id="editUserType" class="form-select" required>
+                            <option value="Student">Student</option>
+                            <option value="RA">Resident Assistant</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHostelName" class="form-label">Hostel Name</label>
+                        <input type="text" id="editHostelName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editRoomNumber" class="form-label">Room Number</label>
+                        <input type="text" id="editRoomNumber" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editStatus" class="form-label">Status</label>
+                        <select id="editStatus" class="form-select" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="saveUserBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete User Confirmation Modal -->
+    <div id="deleteUserModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-trash"></i>
+                    Delete User
+                </h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+                    <div id="deleteUserInfo"></div>
+                </div>
+                <input type="hidden" id="deleteUserId">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-plus"></i>
+                    Add New User
+                </h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="newFullName" class="form-label">Full Name</label>
+                        <input type="text" id="newFullName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail" class="form-label">Email</label>
+                        <input type="email" id="newEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPhone" class="form-label">Phone</label>
+                        <input type="tel" id="newPhone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserType" class="form-label">User Type</label>
+                        <select id="newUserType" class="form-select" required>
+                            <option value="Student">Student</option>
+                            <option value="RA">Resident Assistant</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newHostelName" class="form-label">Hostel Name</label>
+                        <input type="text" id="newHostelName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newRoomNumber" class="form-label">Room Number</label>
+                        <input type="text" id="newRoomNumber" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="newStatus" class="form-label">Status</label>
+                        <select id="newStatus" class="form-select" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="addNewUserBtn">Add User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 p-4 bg-white rounded-lg shadow-lg border-l-4 border-green-500 transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <i id="toastIcon" class="fas fa-check-circle text-green-500"></i>
+            </div>
+            <div class="ml-3">
+                <p id="toastMessage" class="text-sm font-medium text-gray-900"></p>
+            </div>
+            <div class="ml-4 flex-shrink-0 flex">
+                <button id="closeToast" class="inline-flex text-gray-400 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCv3oSTt3cChY2l2ZKeKzratpq4J9Lspco",
+            authDomain: "smartroom-31b43.firebaseapp.com",
+            projectId: "smartroom-31b43",
+            storageBucket: "smartroom-31b43.appspot.com",
+            messagingSenderId: "321362246067",
+            appId: "1:321362246067:web:740f994f8909b0e308b3c6",
+            measurementId: "G-HP6NP92D44"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        // Global users array to store fetched user data
+        let allUsers = [];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication status first
+            checkAuthStatus();
+            
+            // Add event listeners for modals
+            setupModalListeners();
+            
+            // Add User button
+            document.getElementById('addUserBtn').addEventListener('click', () => {
+                openModal('addUserModal');
+            });
+            
+            // Add new user form submission
+            document.getElementById('addNewUserBtn').addEventListener('click', addNewUser);
+            
+            // Save edited user
+            document.getElementById('saveUserBtn').addEventListener('click', saveUserChanges);
+            
+            // Confirm delete user
+            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteUser);
+            
+            // Toast notification close button
+            document.getElementById('closeToast').addEventListener('click', hideToast);
+        });
+
+        // Check if user is authenticated and is a web admin
+        async function checkAuthStatus() {
+            try {
+                // Check if user is signed in
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        // Check if user is a web admin
+                        const webAdminDoc = await db.collection('webAdmins').doc(user.uid).get();
+                        
+                        if (webAdminDoc.exists) {
+                            // User is authenticated and is a web admin
+                            fetchUsers();
+                        } else {
+                            // User is not a web admin
+                            showError("Access Denied: You don't have admin privileges");
+                        }
+                    } else {
+                        // User is not signed in
+                        window.location.href = 'login.html';
+                    }
+                });
+            } catch (error) {
+                console.error("Authentication check failed:", error);
+                showError("Authentication failed: " + error.message);
+            }
+        }
+
+        // Setup modal event listeners
+        function setupModalListeners() {
+            // Close buttons
+            document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const modal = e.target.closest('.modal-overlay');
+                    closeModal(modal.id);
+                });
+            });
+            
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        }
+
+        // Open modal function
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal function
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Show toast notification
+        function showToast(message, success = true) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastMessage.textContent = message;
+            
+            if (success) {
+                toast.classList.remove('border-red-500');
+                toast.classList.add('border-green-500');
+                toastIcon.classList.remove('fa-exclamation-circle', 'text-red-500');
+                toastIcon.classList.add('fa-check-circle', 'text-green-500');
+            } else {
+                toast.classList.remove('border-green-500');
+                toast.classList.add('border-red-500');
+                toastIcon.classList.remove('fa-check-circle', 'text-green-500');
+                toastIcon.classList.add('fa-exclamation-circle', 'text-red-500');
+            }
+            
+            toast.classList.remove('translate-x-full');
+            
+            // Auto hide toast after 3 seconds
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+        // Hide toast notification
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('translate-x-full');
+        }
+
+        async function fetchUsers() {
+            try {
+                const usersSnapshot = await db.collection('users').get();
+                allUsers = usersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                // Sort users into categories
+                const raUsers = allUsers.filter(user => user.userType === 'RA');
+                const studentUsers = allUsers.filter(user => user.userType === 'Student');
+                const adminUsers = allUsers.filter(user => user.userType === 'Admin');
+                
+                // Sort each category by name
+                raUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+                studentUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+                adminUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+                
+                // Render all sections
+                renderUserSections(adminUsers, raUsers, studentUsers);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                showError("Error loading users: " + error.message);
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('users-container').innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        <i class="fas fa-sync-alt"></i>
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Render user sections
+        function renderUserSections(adminUsers, raUsers, studentUsers) {
+            const usersContainer = document.getElementById('users-container');
+            
+            let html = '';
+            
+            // Admin Section
+            if (adminUsers.length > 0) {
+                html += `<div class="user-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-user-cog"></i>
+                            Administrators
+                            <span class="badge badge-primary">${adminUsers.length}</span>
+                        </h2>
+                    </div>`;
+                
+                html += createTable(adminUsers, 'Admin');
+                html += `</div>`;
+            }
+            
+            // RA Section
+            html += `<div class="user-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-user-shield"></i>
+                        Resident Assistants
+                        <span class="badge badge-primary">${raUsers.length}</span>
+                    </h2>
+                </div>`;
+            
+            if (raUsers.length === 0) {
+                html += `<div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <p>No Resident Assistants found</p>
+                </div>`;
+            } else {
+                html += createTable(raUsers, 'RA');
+            }
+            
+            html += `</div>`;
+            
+            // Student Section
+            html += `<div class="user-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-user-graduate"></i>
+                        Students
+                        <span class="badge badge-secondary">${studentUsers.length}</span>
+                    </h2>
+                </div>`;
+            
+            if (studentUsers.length === 0) {
+                html += `<div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <p>No students found</p>
+                </div>`;
+            } else {
+                html += createTable(studentUsers, 'Student');
+            }
+            
+            html += `</div>`;
+            
+            usersContainer.innerHTML = html;
+            
+            // Add event listeners to action buttons
+            addActionButtonListeners();
+        }
+        
+        // Helper function to create tables
+        function createTable(users, userType) {
+            let tableHTML = `
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Contact</th>
+                            <th>Hostel Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach(user => {
+                const initials = user.fullName ? user.fullName.split(' ').map(n => n[0]).join('') : '??';
+                const isActive = user.status === 'active' || user.status === undefined; // Default to active if status not set
+                
+                tableHTML += `
+                    <tr data-user-id="${user.id}">
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">${initials}</div>
+                                <div>
+                                    <div class="user-name">${user.fullName || 'N/A'}</div>
+                                    <div class="user-email">${userType}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>${user.email || 'N/A'}</div>
+                            <div class="user-email">${user.phone || 'No phone'}</div>
+                        </td>
+                        <td>
+                            <div>${user.hostelName || 'N/A'}</div>
+                            <div class="user-email">Room ${user.roomNumber || 'N/A'}</div>
+                        </td>
+                        <td>
+                            <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                                ${isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn view-user-btn" title="View" data-user-id="${user.id}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn edit-user-btn" title="Edit" data-user-id="${user.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete-user-btn" title="Delete" data-user-id="${user.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            return tableHTML;
+        }
+        
+        // Add event listeners to the action buttons
+        function addActionButtonListeners() {
+            // View User
+            document.querySelectorAll('.view-user-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const userId = e.currentTarget.getAttribute('data-user-id');
+                    viewUser(userId);
+                });
+            });
+            
+            // Edit User
+            document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const userId = e.currentTarget.getAttribute('data-user-id');
+                    editUser(userId);
+                });
+            });
+            
+            // Delete User
+            document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const userId = e.currentTarget.getAttribute('data-user-id');
+                    confirmDeleteUser(userId);
+                });
+            });
+        }
+        
+        // View User Details
+        function viewUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) {
+                showToast('User not found', false);
+                return;
+            }
+            
+            const viewUserContent = document.getElementById('viewUserContent');
+            const initials = user.fullName ? user.fullName.split(' ').map(n => n[0]).join('') : '??';
+            const isActive = user.status === 'active' || user.status === undefined;
+            
+            viewUserContent.innerHTML = `
+                <div class="flex items-center mb-6">
+                    <div class="user-avatar text-2xl w-16 h-16">${initials}</div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-semibold">${user.fullName || 'N/A'}</h3>
+                        <p class="text-gray-500">${user.userType}</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="user-detail">
+                        <div class="user-detail-label">Email</div>
+                        <div class="user-detail-value">${user.email || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">Phone</div>
+                        <div class="user-detail-value">${user.phone || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">User Type</div>
+                        <div class="user-detail-value">${user.userType || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">Hostel</div>
+                        <div class="user-detail-value">${user.hostelName || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">Room Number</div>
+                        <div class="user-detail-value">${user.roomNumber || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">Status</div>
+                        <div class="user-detail-value">
+                            <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                                ${isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="user-detail">
+                        <div class="user-detail-label">User ID</div>
+                        <div class="user-detail-value text-gray-500 text-sm">${user.id}</div>
+                    </div>
+                </div>
+            `;
+            
+            openModal('viewUserModal');
+        }
+        
+        // Edit User
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) {
+                showToast('User not found', false);
+                return;
+            }
+            
+            // Populate form fields
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editFullName').value = user.fullName || '';
+            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editUserType').value = user.userType || 'Student';
+            document.getElementById('editHostelName').value = user.hostelName || '';
+            document.getElementById('editRoomNumber').value = user.roomNumber || '';
+            document.getElementById('editStatus').value = user.status || 'active';
+            
+            openModal('editUserModal');
+        }
+        
+        // Save User Changes
+        async function saveUserChanges() {
+            const userId = document.getElementById('editUserId').value;
+            const updatedUser = {
+                fullName: document.getElementById('editFullName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                userType: document.getElementById('editUserType').value,
+                hostelName: document.getElementById('editHostelName').value,
+                roomNumber: document.getElementById('editRoomNumber').value,
+                status: document.getElementById('editStatus').value,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                // Update in Firestore
+                await db.collection('users').doc(userId).update(updatedUser);
+                
+                // Update local data
+                const userIndex = allUsers.findIndex(u => u.id === userId);
+                if (userIndex !== -1) {
+                    allUsers[userIndex] = { ...allUsers[userIndex], ...updatedUser };
+                }
+                
+                // Re-render user sections
+                const raUsers = allUsers.filter(user => user.userType === 'RA');
+                const studentUsers = allUsers.filter(user => user.userType === 'Student');
+                const adminUsers = allUsers.filter(user => user.userType === 'Admin');
+                renderUserSections(adminUsers, raUsers, studentUsers);
+                
+                closeModal('editUserModal');
+                showToast('User updated successfully');
+            } catch (error) {
+                console.error("Error updating user:", error);
+                showToast('Failed to update user: ' + error.message, false);
+            }
+        }
+        
+        // Confirm Delete User
+        function confirmDeleteUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) {
+                showToast('User not found', false);
+                return;
+            }
+            
+            // Set user ID for deletion
+            document.getElementById('deleteUserId').value = userId;
+            
+            // Show user info in confirmation modal
+            document.getElementById('deleteUserInfo').innerHTML = `
+                <div class="font-semibold">${user.fullName || 'N/A'}</div>
+                <div class="text-gray-600">${user.email || 'N/A'}</div>
+                <div class="text-gray-500 text-sm">${user.userType} - ${user.hostelName || 'N/A'}, Room ${user.roomNumber || 'N/A'}</div>
+            `;
+            
+            openModal('deleteUserModal');
+        }
+        
+        // Delete User
+        async function deleteUser() {
+            const userId = document.getElementById('deleteUserId').value;
+            
+            try {
+                // Delete from Firestore
+                await db.collection('users').doc(userId).delete();
+                
+                // Remove from local data
+                allUsers = allUsers.filter(user => user.id !== userId);
+                
+                // Re-render user sections
+                const raUsers = allUsers.filter(user => user.userType === 'RA');
+                const studentUsers = allUsers.filter(user => user.userType === 'Student');
+                const adminUsers = allUsers.filter(user => user.userType === 'Admin');
+                renderUserSections(adminUsers, raUsers, studentUsers);
+                
+                closeModal('deleteUserModal');
+                showToast('User deleted successfully');
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                showToast('Failed to delete user: ' + error.message, false);
+            }
+        }
+        
+        // Add New User
+        async function addNewUser() {
+            const newUser = {
+                fullName: document.getElementById('newFullName').value,
+                email: document.getElementById('newEmail').value,
+                phone: document.getElementById('newPhone').value,
+                userType: document.getElementById('newUserType').value,
+                hostelName: document.getElementById('newHostelName').value,
+                roomNumber: document.getElementById('newRoomNumber').value,
+                status: document.getElementById('newStatus').value,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                // Add to Firestore
+                const docRef = await db.collection('users').add(newUser);
+                
+                // Add to local data with the new ID
+                allUsers.push({
+                    id: docRef.id,
+                    ...newUser
+                });
+                
+                // Re-render user sections
+                const raUsers = allUsers.filter(user => user.userType === 'RA');
+                const studentUsers = allUsers.filter(user => user.userType === 'Student');
+                const adminUsers = allUsers.filter(user => user.userType === 'Admin');
+                renderUserSections(adminUsers, raUsers, studentUsers);
+                
+                // Reset form
+                document.getElementById('addUserForm').reset();
+                
+                closeModal('addUserModal');
+                showToast('User added successfully');
+            } catch (error) {
+                console.error("Error adding user:", error);
+                showToast('Failed to add user: ' + error.message, false);
+            }
+        }
+    </script>
+</body>
+</html>
