@@ -126,14 +126,14 @@
                 <div class="flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 rounded-lg">
                     <i class="fas fa-home text-xl text-white"></i>
                 </div>
-                <span class="text-xl font-bold tracking-tight">SmartRoom</span>
+                <span class="text-xl font-bold tracking-tight">RoomSync</span>
             </div>
             
             <div class="p-5 border-b border-gray-700">
                 <div class="text-blue-100 text-xs font-medium uppercase tracking-wider">Project</div>
                 <div class="text-lg font-semibold flex items-center">
-                    <span>smartroom</span>
-                    <span class="ml-2 text-xs bg-white bg-opacity-20 rounded-full px-2 py-1">v2.1</span>
+                    <span>RoomSync </span>
+                    >
                 </div>
             </div>
             
@@ -289,10 +289,7 @@
                     </div>
                 </div>
                 
-                <!-- Footer -->
-                <div class="mt-6 text-center text-sm text-gray-500">
-                    <p>&copy; 2025 SmartRoom - University Housing Management System</p>
-                </div>
+              
             </div>
         </div>
     </div>
@@ -479,13 +476,13 @@
                 document.getElementById('welcomeMessage').textContent = `Welcome back, ${user.displayName || 'Admin'}`;
                 fetchDashboardData();
             } else {
-                window.location.href = "login.html";
+                window.location.href = "index.html";
             }
         });
         
         function handleLogout() {
             firebase.auth().signOut().then(() => {
-                window.location.href = "login.html";
+                window.location.href = "index.html";
             }).catch((error) => {
                 console.error("Logout failed:", error);
                 alert("Logout failed. Please try again.");
